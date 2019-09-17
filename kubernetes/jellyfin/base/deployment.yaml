@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: jellyfin
+  labels:
+    app: jellyfin
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: jellyfin
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: jellyfin
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: jellyfin
+        image: jellyfin/jellyfin
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 8096
+        volumeMounts:
+        - mountPath: /media
+          name: media-jellyfin
+      volumes:
+        - name: media-jellyfin
+          hostPath:
+            path: /media

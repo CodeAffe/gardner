@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: radarr
+  labels:
+    app: radarr
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: radarr
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+  template:
+    metadata:
+      labels:
+        app: radarr
+    spec:
+      restartPolicy: Always
+      containers:
+      - name: radarr
+        image: linuxserver/radarr
+        imagePullPolicy: Always
+        ports:
+          - containerPort: 7878
+        volumeMounts:
+        - mountPath: /media
+          name: media-jellyfin
+      volumes:
+        - name: media-jellyfin
+          hostPath:
+            path: /media
